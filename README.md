@@ -35,8 +35,8 @@ If you did **not** take 6.031 in Fall 2021 or Spring 2022, to ensure that your m
 - Run `source demo-setup.sh` to set up the demo branches.
 - Check your local branches with `git branch`; you should have one new branch, with a new commit.
   - `view-demo` demos how to extend functionality of a resource
-- If everything looks good, run `git push --all origin`. At this point, you should see the demo branch at `https://github.com/61040-fa22/<repo-name>/branches` (and the `view-demo-code` branch can now be deleted!)
-- Now, if you navigate to the commit history of this branch (`https://github.com/61040-fa22/<repo-name>/commits/<branch-name>`), you can click on the "demo:" commit and see exactly what we changed for each demo!
+- If everything looks good, run `git push --all origin`. At this point, you should see the demo branch at `https://github.com/<username>/<repo-name>/branches` (and the `view-demo-code` branch can now be deleted!)
+- Now, if you navigate to the commit history of this branch (`https://github.com/<username>/<repo-name>/commits/<branch-name>`), you can click on the "demo:" commit and see exactly what we changed for each demo!
 
 ### MongoDB Atlas setup
 
