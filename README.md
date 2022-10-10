@@ -4,7 +4,7 @@ Build your own not-quite-[Twitter](https://twitter.com/)!
 
 ## Starter Code
 
-This starter code implements users (with login/sessions), freets, and feeds so that you may focus on implementing your own design ideas.
+  This starter code implements users (with login/sessions), and freets so that you may focus on implementing your own design ideas.
 
 The project is structured as follows:
 
