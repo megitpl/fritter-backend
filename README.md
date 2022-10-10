@@ -25,7 +25,7 @@ The project is structured as follows:
 
 ## Installation
 
-Make a copy of this repository under your personal GitHub account by clicking the `Use this template` button. Make sure to enable to `Include all branches` option.
+Make a copy of this repository under your personal GitHub account by clicking the `Use this template` button. Make sure to enable the `Include all branches` option.
 
 If you did **not** take 6.031 in Fall 2021 or Spring 2022, to ensure that your machine has the necessary software for the assignment, please follow Steps 1, 2, 5, and 6 on [this page](https://web.mit.edu/6.031/www/sp22/getting-started/) from the [6.031 website](https://web.mit.edu/6.031/www/sp22/) (now 6.1020).
 
