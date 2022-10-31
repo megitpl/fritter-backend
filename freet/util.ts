@@ -9,6 +9,8 @@ type FreetResponse = {
   dateCreated: string;
   content: string;
   dateModified: string;
+  likedBy: any[];
+  hikeLikes: boolean;
 };
 
 /**
@@ -33,13 +35,18 @@ const constructFreetResponse = (freet: HydratedDocument<Freet>): FreetResponse =
     })
   };
   const {username} = freetCopy.authorId;
+  const likes = freetCopy.likedBy;
   delete freetCopy.authorId;
   return {
     ...freetCopy,
     _id: freetCopy._id.toString(),
     author: username,
     dateCreated: formatDate(freet.dateCreated),
-    dateModified: formatDate(freet.dateModified)
+    dateModified: formatDate(freet.dateModified),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    likedBy: likes, // TO DO: unsafe assignment
+    hikeLikes: false
+
   };
 };
 

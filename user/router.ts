@@ -1,4 +1,5 @@
-import type {Request, Response} from 'express';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import type { Request, Response } from 'express';
 import express from 'express';
 import FreetCollection from '../freet/collection';
 import UserCollection from './collection';
@@ -148,4 +149,265 @@ router.delete(
   }
 );
 
-export {router as userRouter};
+/**
+ * Show the logger in user's profile.
+ *
+ * @name GET /api/users/profile
+ * @throws {403} - If user is not logged in
+ */
+router.get(
+  '/profile',
+  // [
+  //   userValidator.isUserLoggedIn
+  // ],
+
+  async (req: Request, res: Response) => {
+    console.log("helo");
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.findOneByUserId(userId);
+    res.status(200).json({
+      message: 'This is the user.',
+      user
+    });
+  }
+);
+/**
+ * Show a given user's profile.
+ *
+ * @name GET /api/users/:username/profile
+ * @throws {403} - If user is not logged in
+ */
+router.get(
+  '/:username?/profile',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUsername(req.params.username);
+    res.status(200).json({
+      message: 'This is the user profile.',
+      user
+    });
+  }
+);
+
+/**
+ * Show a user's followers.
+ *
+ * @name GET /api/users/followers
+ * @param {user} user - The user
+ * @return {UserResponse} - An object with user's details
+ * @throws {403} - If user is not logged in
+ *
+ */
+router.get(
+  '/followers',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const user = await UserCollection.findOneByUserId(userId);
+    // eslint-disable-next-line prefer-destructuring
+    const followers = user.followers;
+    res.status(200).json({
+      message: 'This is the followers.',
+      followers
+    });
+  }
+);
+/**
+ * Show a user's followed.
+ *
+ * @name GET /api/users/followed
+ *
+ */
+router.get(
+  '/followed',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.findOneByUserId(userId);
+    const followed = user.followed;
+    res.status(200).json({
+      message: 'This is the users followed accounts.',
+      followed
+    });
+  }
+);
+
+/**
+ * Follow a user.
+ *
+ * @name PUT /api/users/:username/follow
+ *
+ */
+router.put(
+  '/:username?/follow',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.findOneByUserId(userId);
+    const followUsername = req.params.username;
+
+    if (user.username === followUsername) {
+      res.status(403).json({
+        error: 'Cannot follow yourself.'
+      });
+    }
+
+    await UserCollection.followUser(userId, followUsername);
+    res.status(200).json({
+      message: 'Successfully followed!'
+    });
+  }
+);
+
+/**
+ * Unfollow a user.
+ *
+ * @name PUT /api/users/:username/follow
+ *
+ */
+router.put(
+  '/follow/:username?',
+  [
+    userValidator.isUserLoggedIn,
+    userValidator.isValidUsername
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.findOneByUserId(userId);
+    const unfollowUsername = req.params.username;
+    if (!user.followed.includes(unfollowUsername)) {
+      res.status(403).json({
+        message: 'You do not follow this user.'
+      });
+    }
+
+    await UserCollection.unfollowUser(userId, unfollowUsername);
+    res.status(200).json({
+      message: 'Successfully followed!'
+    });
+  }
+);
+/**
+ * Show a user's timeline.
+ *
+ * @name GET /api/users/:username?/timeline
+ *
+ */
+router.get(
+  '/timeline',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUsername(req.params.username);
+    const timeline = [user.postedFreets, user.sharedFreets];
+    res.status(200).json({
+      message: 'This is the users timeline!',
+      timeline
+    });
+  }
+);
+/**
+ * Show a user's feed.
+ *
+ * @name GET /api/users/feed
+ *
+ */
+router.get(
+  '/feed',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.findOneByUserId(userId);
+    const feed: any[] = [];
+    user.followed.forEach(async item => {
+      const followedUser = await UserCollection.findOneByUsername(item);
+      const posted = followedUser.postedFreets;
+      const shared = followedUser.sharedFreets;
+      followedUser.postedFreets.map(x => feed.push(x));
+      followedUser.sharedFreets.map(x => feed.push(x));
+    });
+    console.log('Feed is:', feed);
+    res.status(200).json({
+      message: 'This is the users feed',
+      feed
+    });
+  }
+);
+
+/**
+ * View a user's shared Freets.
+ *
+ * @name GET /api/users/:username/shared
+ *
+ */
+router.get(
+  '/:username?/shared',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUsername(req.params.username);
+    const shared = user.sharedFreets;
+    res.status(200).json({
+      message: 'Shared freets:',
+      shared
+    });
+  }
+);
+
+/**
+ * View a user's liked Freets.
+ *
+ * @name GET /api/users/:username/liked
+ *
+ */
+router.get(
+  '/:username?/liked',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUsername(req.params.username);
+    const liked = user.likedFreets;
+    res.status(200).json({
+      message: 'Shared freets:',
+      liked
+    });
+  }
+);
+
+/**
+ * View user's posted Freets.
+ *
+ * @name GET /api/users/:username/posted
+ *
+ */
+router.get(
+  '/:username?/posted',
+  [
+    userValidator.isUserLoggedIn
+  ],
+  async (req: Request, res: Response) => {
+    const user = await UserCollection.findOneByUsername(req.params.username);
+    const posted = user.postedFreets;
+    res.status(200).json({
+      message: 'posted freets:',
+      posted
+    });
+  }
+);
+
+
+
+export { router as userRouter };

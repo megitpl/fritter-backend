@@ -1,5 +1,5 @@
-import type {Request, Response, NextFunction} from 'express';
-import {Types} from 'mongoose';
+import type { Request, Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 import FreetCollection from '../freet/collection';
 
 /**
@@ -25,7 +25,7 @@ const isFreetExists = async (req: Request, res: Response, next: NextFunction) =>
  * spaces and not more than 140 characters
  */
 const isValidFreetContent = (req: Request, res: Response, next: NextFunction) => {
-  const {content} = req.body as {content: string};
+  const { content } = req.body as { content: string };
   if (!content.trim()) {
     res.status(400).json({
       error: 'Freet content must be at least one character long.'
@@ -57,6 +57,36 @@ const isValidFreetModifier = async (req: Request, res: Response, next: NextFunct
   }
 
   next();
+};
+
+/**
+//  * Get all the likes of a tweet.
+//  */
+// const getLikes = async (req: Request, res: Response, next: NextFunction) => {
+//   const freet = await FreetCollection.findOne(req.params.freetId);
+//   const userId = freet.authorId;
+//   const liked = freet.likedBy;
+//   // eslint-disable-next-line prefer-destructuring
+//   const hideLikes = freet.hideLikes;
+//   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+//   if (req.session.userId !== userId.toString()) {
+//     res.status(403).json({
+//       error: 'error'
+//     });
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+//     return liked;
+//   }
+// };
+
+/**
+ * Checks if the tweet should have hidden likes.
+ */
+const hideLikes = async (req: Request, res: Response, next: NextFunction) => {
+  const freet = await FreetCollection.findOne(req.params.freetId);
+  // eslint-disable-next-line prefer-destructuring
+  const hideLikes = freet.hideLikes;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return hideLikes;
 };
 
 export {

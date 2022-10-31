@@ -313,3 +313,92 @@ This renders the `index.html` file that will be used to interact with the backen
 **Throws**
 
 - `403` if the user is not logged in
+
+
+
+
+
+
+
+
+####  `GET api/freets/shared` - get the shared freets of the logged in user
+**Returns**
+- An array of the logged-in user's shared freets 
+**Throws**
+- `403` if no user is logged in
+####  `GET api/freets/posted` - get the posted freets of the logged in user
+**Returns**
+- An array of the logged-in user's posted freets 
+**Throws**
+- `403` if no user is logged in
+####  `GET api/freets/liked` - get the liked freets of the logged in user
+**Returns**
+- An array of the logged-in user's liked freets 
+**Throws**
+- `403` if no user is logged in
+####  `GET api/users/timeline` - get the timeline of the logged in user 
+**Returns**
+- An array of the logged-in user's shared and posted freets// all the tweets that will appear on their timeline.  
+**Throws**
+- `403` if no user is logged in
+####  `GET api/users/followers`  - get the logged in user's followers 
+####  `GET api/users/followed` - get the logged in user's followed accounts 
+####  `GET /api/users/feed` - get feed freets (posted and shared freets of followed)
+####  `GET /api/users/profile` - get feed freets (posted and shared freets of followed)
+
+
+####  `GET api/users/:username/timeline` - get a user's timeline 
+####  `GET api/users/:username/followed` - get a user's followed 
+####  `GET api/users/:username/followers`  - get a user's followers 
+####  `GET api/freets/:username/posted` - get a user's posted freets 
+####  `GET api/freets/:username/shared` - get a user's shared freets
+####  `GET api/freets/:username/liked` - get a user's liked freets
+
+####  `PUT api/users/:username/follow`
+####  `DELETE api/users/:username/follow`
+
+####  `PUT /api/freets/:FreetId/like`
+####  `PUT /api/freets/:FreetId/share`
+####  `DELETE /api/freets/:FreetId/like`
+####  `DELETE /api/freets/:FreetId/share`
+
+#### `PUT /api/users/:username/likes/hide` - hide likes 
+#### `DELETE /api/users/:username/likes/hide` - unhide likes 
+
+
+
+
+
+
+
+
+#### `GET /api/users/followers` - Get the logged-in user's followers' usernames
+**Returns**
+- An array with the user's followers' usernames 
+**Throws**
+- `403` if no user is logged in
+
+#### `GET /api/users/followed` - Get the logged-in user's followed account usernames 
+
+**Returns**
+
+- An array with the usernames of the accounts that the user follows. 
+
+**Throws**
+
+- `403` if no user is logged in
+
+
+
+#### `PUT /api/users/:USERNAME?/follow` - Logged in user follows account with the input username 
+
+**Returns**
+
+- An array with the usernames of the accounts that the user follows. 
+
+**Throws**
+
+- `403` if no user is logged in
+- `404` if `username` is not a recognized username of any user
+
+

@@ -6,9 +6,7 @@
  */
 
 function viewAllFreets(fields) {
-  fetch('/api/freets')
-    .then(showResponse)
-    .catch(showResponse);
+  fetch('/api/freets').then(showResponse).catch(showResponse);
 }
 
 function viewFreetsByAuthor(fields) {
@@ -18,13 +16,21 @@ function viewFreetsByAuthor(fields) {
 }
 
 function createFreet(fields) {
-  fetch('/api/freets', {method: 'POST', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  fetch('/api/freets', {
+    method: 'POST',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'},
+  })
     .then(showResponse)
     .catch(showResponse);
 }
 
 function editFreet(fields) {
-  fetch(`/api/freets/${fields.id}`, {method: 'PUT', body: JSON.stringify(fields), headers: {'Content-Type': 'application/json'}})
+  fetch(`/api/freets/${fields.id}`, {
+    method: 'PUT',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'},
+  })
     .then(showResponse)
     .catch(showResponse);
 }
@@ -33,4 +39,50 @@ function deleteFreet(fields) {
   fetch(`/api/freets/${fields.id}`, {method: 'DELETE'})
     .then(showResponse)
     .catch(showResponse);
+}
+
+function likeFreet(fields) {
+  fetch(`/api/freets/${fields.id}/like`, {
+    method: 'PUT',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  })
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function shareFreet(fields) {
+  fetch(`/api/freets/${fields.id}/share`, {
+    method: 'PUT',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  })
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function viewMyLiked(fields) {
+  fetch('/api/freets/liked', {
+    method: 'GET',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  })
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function viewMyShared(fields) {
+  fetch('api/freets/shared', {
+    method: 'GET',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  }).then(showResponse).catch(showResponse);
+}
+
+function viewMyPosted(fields) {
+  fetch('/api/freets/posted', {
+    method: 'GET',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  }).then(showResponse).catch(showResponse);
 }

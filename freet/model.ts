@@ -14,6 +14,10 @@ export type Freet = {
   dateCreated: Date;
   content: string;
   dateModified: Date;
+  likedBy: any[];
+  hideLikes: boolean;
+  sharedBy: any[];
+  hideShares: boolean;
 };
 
 export type PopulatedFreet = {
@@ -22,6 +26,10 @@ export type PopulatedFreet = {
   dateCreated: Date;
   content: string;
   dateModified: Date;
+  likedBy: any[];
+  hideLikes: boolean;
+  sharedBy: any[];
+  hideShares: boolean;
 };
 
 // Mongoose schema definition for interfacing with a MongoDB table
@@ -49,6 +57,18 @@ const FreetSchema = new Schema<Freet>({
   dateModified: {
     type: Date,
     required: true
+  },
+  likedBy: {
+    type: [],
+    required: false
+  },
+  sharedBy: {
+    type: [],
+    required: true
+  },
+  hideShares: {
+    type: Boolean,
+    required: false
   }
 });
 

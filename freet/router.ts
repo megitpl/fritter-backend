@@ -4,6 +4,7 @@ import FreetCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as util from './util';
+import UserCollection from 'user/collection';
 
 const router = express.Router();
 
@@ -130,5 +131,84 @@ router.put(
     });
   }
 );
+
+/**
+ * Like a freet
+ *
+ * @name PUT /api/freets/:freetId/like
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the author of
+ *                 the freet
+ * @throws {404} - If the freetId is not valid
+ */
+router.put(
+  '/:freetId?/like',
+  [
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const freet = await FreetCollection.likeTweet(req.params.freetId, userId);
+    res.status(200).json({
+      message: 'Freet was liked successfully.',
+      freet
+    });
+  }
+);
+
+/**
+ * Unike a freet
+ *
+ * @name PUT /api/freets/:freetId/unlike
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the author of
+ *                 the freet
+ * @throws {404} - If the freetId is not valid
+ */
+ router.put(
+  '/:freetId?/unlike',
+  [
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const freet = await FreetCollection.unlikeTweet(req.params.freetId, userId);
+    res.status(200).json({
+      message: 'Freet was liked successfully.',
+      freet
+    });
+  }
+);
+
+/**
+ * Share a freet
+ *
+ * @name PUT /api/freets/:id/share
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the author of
+ *                 the freet
+ * @throws {404} - If the freetId is not valid
+ */
+router.put(
+  '/:freetId?/share',
+  [
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const freet = await FreetCollection.shareTweet(req.params.freetId, userId);
+    res.status(200).json({
+      message: 'Freet was shared successfully.',
+      freet
+    });
+  }
+);
+
 
 export {router as freetRouter};

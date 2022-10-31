@@ -77,6 +77,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/users', userRouter);
 app.use('/api/freets', freetRouter);
 
+
 // Catch all the other routes and display error message
 app.all('*', (req: Request, res: Response) => {
   res.status(400).render('error');

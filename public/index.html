@@ -1,131 +1,222 @@
 <html>
+  <head>
+    <title>Fritter</title>
+    <meta name="author" content="6.170 Staff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="/scripts/freet.js"></script>
+    <script src="/scripts/user.js"></script>
+    <script src="/scripts/index.js"></script>
+  </head>
 
-<head>
-  <title>Fritter</title>
-  <meta name="author" content="6.170 Staff">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/stylesheets/style.css">
-  <script src="/scripts/freet.js"></script>
-  <script src="/scripts/user.js"></script>
-  <script src="/scripts/index.js"></script>
-</head>
+  <body>
+    <header>
+      <h1>Fritter</h1>
+    </header>
 
-<body>
-  <header>
-    <h1>Fritter</h1>
-  </header>
-
-  <main class="two-col">
-    <section id="operations-container">
-      <h2>Operations:</h2>
-      <div class="scrollbox">
-        <form id="create-user">
-          <h3>Create User</h3>
-          <div>
-            <label for="username">Username:</label>
-            <input id="username" name="username">
-          </div>
-          <div>
-            <label for="password">Password:</label>
-            <input id="password" name="password">
-          </div>
-          <input type="submit" value="Create User">
-        </form>
-
-        <form id="delete-user">
-          <h3>Delete User</h3>
-          <input type="submit" value="Delete User">
-        </form>
-
-        <form id="change-username">
-          <h3>Change Username</h3>
-          <div>
-            <label for="username">New Username:</label>
-            <input id="username" name="username">
-          </div>
-          <input type="submit" value="Change Username">
-        </form>
-
-        <form id="change-password">
-          <h3>Change Password</h3>
-          <div>
-            <label for="password">New Password:</label>
-            <input id="password" name="password">
-          </div>
-          <input type="submit" value="Change Password">
-        </form>
-
-        <form id="sign-in">
-          <h3>Sign In</h3>
-          <div>
-            <label for="username">Username:</label>
-            <input id="username" name="username">
-          </div>
-          <div>
-            <label for="password">Password:</label>
-            <input id="password" name="password">
-          </div>
-          <input type="submit" value="Sign In">
-        </form>
-
-        <form id="sign-out">
-          <h3>Sign Out</h3>
-          <input type="submit" value="Sign out">
-        </form>
-
-        <form id="view-all-freets">
+    <main class="two-col">
+      <section>
+        <h2>Account Operations</h2>
+        <div class="scrollbox">
+          <form id="create-user">
+            <h3>Create User</h3>
+            <div>
+              <label for="username">Username:</label>
+              <input id="username" name="username" />
+            </div>
+            <div>
+              <label for="password">Password:</label>
+              <input id="password" name="password" />
+            </div>
+            <input type="submit" value="Create User" />
+          </form>
+          <form id="delete-user">
+            <h3>Delete User</h3>
+            <input type="submit" value="Delete User" />
+          </form>
+          <form id="change-username">
+            <h3>Change Username</h3>
+            <div>
+              <label for="username">New Username:</label>
+              <input id="username" name="username" />
+            </div>
+            <input type="submit" value="Change Username" />
+          </form>
+          <form id="change-password">
+            <h3>Change Password</h3>
+            <div>
+              <label for="password">New Password:</label>
+              <input id="password" name="password" />
+            </div>
+            <input type="submit" value="Change Password" />
+          </form>
+          <form id="sign-in">
+            <h3>Sign In</h3>
+            <div>
+              <label for="username">Username:</label>
+              <input id="username" name="username" />
+            </div>
+            <div>
+              <label for="password">Password:</label>
+              <input id="password" name="password" />
+            </div>
+            <input type="submit" value="Sign In" />
+          </form>
+          <form id="sign-out">
+            <h3>Sign Out</h3>
+            <input type="submit" value="Sign out" />
+          </form>
+          <form id="show-my-profile">
+            <h3>View my profile</h3>
+            <input type="submit" value="View My Profile" />
+          </form>
+          <form id="show-user">
+            <h3>Show User Profile</h3>
+            <input type="submit" value="View User Profile" />
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+          </form>
+        </div>
+      </section>
+      <section id="user-operations-container">
+        <h2>Operations 1:</h2>
+        <div class="scrollbox">
+          <form id="view-liked-freets">
+            <h3>View all liked Freets</h3>
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="View Liked" />
+          </form>
+          <form id="view-shared-freets">
+            <h3>View all shared Freets</h3>
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="View Shared" />
+          </form>
+          <form id="view-posted-freets">
+            <h3>View  posted Freets </h3>
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="View Posted" />
+          </form>
+          <form id="view-timeline">
+            <h3>View  Timeline </h3>
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="View Timeline" />
+          </form>
+          <form id="view-followed">
+            <h3>View Followed</h3>
+            <input type="submit" value="View followed accounts" />
+          </form>
+          <form id="view-followers">
+            <h3>View Followers</h3>
+            <input type="submit" value="View followers" />
+          </form>
+          <form id="unfollow-user">
+            <h3>Unfollow user</h3>
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="unfollow user" />
+          </form>
+          <form id="view-feed">
+            <h3>View Your Feed</h3>
+            <div>
+              <label for="id"></label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="View Feed" />
+          </form>
+          <form id="follow-user">
+            <h3>Follow User</h3>
+            <div>
+              <label for="id">Username:</label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="Follow User" />
+          </form>
+          <form id="view-all-freets">
             <h3>View All Freets</h3>
-            <input type="submit" value="View All Freets">
+            <input type="submit" value="View All Freets" />
           </form>
 
-        <form id="view-freets-by-author">
-          <h3>View Freets By Author</h3>
-          <div>
-            <label for="author">Author:</label>
-            <input id="author" name="author">
-          </div>
-          <input type="submit" value="View Freets By Author">
-        </form>
-
-        <form id="create-freet">
-          <h3>Create Freet</h3>
-          <div>
-            <label for="content">Content:</label>
-            <textarea id="content" name="content"></textarea>
-          </div>
-          <input type="submit" value="Create Freet">
-        </form>
-
-        <form id="edit-freet">
-          <h3>Edit Freet</h3>
-          <div>
-            <label for="id">ID:</label>
-            <input id="id" name="id">
-          </div>
-          <div>
-            <label for="content">Content:</label>
-            <textarea id="content" name="content"></textarea>
-          </div>
-          <input type="submit" value="Edit Freet">
-        </form>
-
-        <form id="delete-freet">
-          <h3>Delete Freet</h3>
-          <div>
-            <label for="id">ID:</label>
-            <input id="id" name="id">
-          </div>
-          <input type="submit" value="Delete Freet">
-        </form>
-      </div>
-    </section>
-    <section>
-      <h2>Response:</h2>
-      <div class="scrollbox">
-        <pre id="response" class="teletype"></pre>
-      </div>
-    </section>
-  </main>
-</body>
-
+        </div>
+      </section>
+      <section id="freet-operations-container">
+        <h2>Freet Operations:</h2>
+        <div class="scrollbox">
+          <form id="create-freet">
+            <h3>Create Freet</h3>
+            <div>
+              <label for="content">Content:</label>
+              <textarea id="content" name="content"></textarea>
+            </div>
+            <input type="submit" value="Create Freet" />
+          </form>
+          <form id="edit-freet">
+            <h3>Edit Freet</h3>
+            <div>
+              <label for="id">ID:</label>
+              <input id="id" name="id" />
+            </div>
+            <div>
+              <label for="content">Content:</label>
+              <textarea id="content" name="content"></textarea>
+            </div>
+            <input type="submit" value="Edit Freet" />
+          </form>
+          <form id="delete-freet">
+            <h3>Delete Freet</h3>
+            <div>
+              <label for="id">ID:</label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="Delete Freet" />
+          </form>
+          <form id="like-freet">
+            <h3>Like Freet</h3>
+            <div>
+              <label for="id">ID of Freet:</label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="Like Freet" />
+          </form>
+          <form id="share-freet">
+            <h3>Share Freet</h3>
+            <div>
+              <label for="id">ID of Freet:</label>
+              <input id="id" name="id" />
+            </div>
+            <input type="submit" value="Share Freet" />
+          </form>
+          <form id="view-freets-by-author">
+            <h3>View Freets By Author</h3>
+            <div>
+              <label for="author">Author:</label>
+              <input id="author" name="author" />
+            </div>
+            <input type="submit" value="View Freets By Author" />
+          </form>
+        </div>
+      </section>
+      <section>
+        <h2>Response:</h2>
+        <div class="scrollbox">
+          <pre id="response" class="teletype"></pre>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>

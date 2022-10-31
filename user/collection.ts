@@ -1,5 +1,7 @@
-import type {HydratedDocument, Types} from 'mongoose';
-import type {User} from './model';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import type { HydratedDocument, Types } from 'mongoose';
+import type { User } from './model';
 import UserModel from './model';
 
 /**
@@ -21,7 +23,7 @@ class UserCollection {
   static async addOne(username: string, password: string): Promise<HydratedDocument<User>> {
     const dateJoined = new Date();
 
-    const user = new UserModel({username, password, dateJoined});
+    const user = new UserModel({ username, password, dateJoined });
     await user.save(); // Saves user to MongoDB
     return user;
   }
@@ -33,7 +35,7 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
    */
   static async findOneByUserId(userId: Types.ObjectId | string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({_id: userId});
+    return UserModel.findOne({ _id: userId });
   }
 
   /**
@@ -43,7 +45,7 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
    */
   static async findOneByUsername(username: string): Promise<HydratedDocument<User>> {
-    return UserModel.findOne({username: new RegExp(`^${username.trim()}$`, 'i')});
+    return UserModel.findOne({ username: new RegExp(`^${username.trim()}$`, 'i') });
   }
 
   /**
@@ -68,7 +70,7 @@ class UserCollection {
    * @return {Promise<HydratedDocument<User>>} - The updated user
    */
   static async updateOne(userId: Types.ObjectId | string, userDetails: any): Promise<HydratedDocument<User>> {
-    const user = await UserModel.findOne({_id: userId});
+    const user = await UserModel.findOne({ _id: userId });
     if (userDetails.password) {
       user.password = userDetails.password as string;
     }
@@ -88,8 +90,51 @@ class UserCollection {
    * @return {Promise<Boolean>} - true if the user has been deleted, false otherwise
    */
   static async deleteOne(userId: Types.ObjectId | string): Promise<boolean> {
-    const user = await UserModel.deleteOne({_id: userId});
+    const user = await UserModel.deleteOne({ _id: userId });
     return user !== null;
+  }
+
+  /**
+   * Follow a user by username. (case insensitive)
+   *
+   * @param {string} userId - The username of the user to be followed
+   * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+   */
+  static async followUser(userId: Types.ObjectId | string, username: string): Promise<HydratedDocument<User, User>> {
+    const user = await UserCollection.findOneByUserId(userId);
+    const toBeFollowed = await UserCollection.findOneByUsername(username);
+    if (user.followed.includes(username)) {
+      throw new Error("already following.");
+    }
+
+    toBeFollowed.followers.push(user.username);
+    await user.save();
+    await toBeFollowed.save();
+    return user;
+  }
+
+  /**
+ * Unfollow a user by userId. (case insensitive)
+ *
+ * @param {string} userId - The username of the user to be followed
+ * @return {Promise<HydratedDocument<User>> | Promise<null>} - The user with the given username, if any
+ */
+  static async unfollowUser(userId: Types.ObjectId | string, username: string): Promise<HydratedDocument<User>> {
+    const user = await UserCollection.findOneByUserId(userId);
+    const toBeUnfollowed = await UserCollection.findOneByUsername(username);
+    user.followed.forEach((item, index) => {
+      if (item === username) {
+        user.followed.splice(index, 1);
+      }
+    });
+    toBeUnfollowed.followers.forEach((item, index) => {
+      if (item === user.username) {
+        toBeUnfollowed.followers.splice(index, 1);
+      }
+    });
+    await user.save();
+    await toBeUnfollowed.save();
+    return user;
   }
 }
 
