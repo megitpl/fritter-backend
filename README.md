@@ -369,10 +369,9 @@ success message
 **Returns**
 - {string} A success message
 **Throws**
-- `403` if the user is not logged in
+-`403` if the user is not logged in
 - 404 if the freet id is not valid 
 - 400 is freet is already liked 
-
 ####  `PUT /api/freets/:FreetId/share` - allows to share a Freet given a freet id
 **Returns**
 - {string} A success message
@@ -394,8 +393,3 @@ success message
 - `403` if the user is not logged in
 - 404 if the freet id is not valid 
 - 409 is freet is already unshared 
-#### `GET /api/users/followers` - Get the logged-in user's followers' usernames
-**Returns**
-- An array with the user's followers' usernames 
-**Throws**
-- `403` if no user is logged in
