@@ -126,15 +126,6 @@ input[type="submit"]:hover {
   align-items: flex-start;
 }
 
-.extra { 
-  display: flex; 
-  flex-direction: row;
-  height: 100px;
-  width: 100px;
-  border-width: 1px; 
-  border-color: white;
-}
-
 .error-container button {
   margin-top: 2rem;
   padding: 1rem;

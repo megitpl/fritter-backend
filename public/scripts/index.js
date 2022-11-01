@@ -55,15 +55,7 @@ const formsAndHandlers = {
 
 // Attach handlers to forms
 function init() {
-  console.log("object forms and handlers: ", Object.entries(formsAndHandlers));
-  console.log("for each:  ", Object.entries(formsAndHandlers));
   Object.entries(formsAndHandlers).forEach(([formID, handler]) => {
-    console.log("formId", formID);
-    console.log("handler", handler);
-  });
-
-  Object.entries(formsAndHandlers).forEach(([formID, handler]) => {
-    console.log("form here:", formID, handler, document.getElementById(formID));
     const form = document.getElementById(formID);
     form.onsubmit = e => {
       e.preventDefault();

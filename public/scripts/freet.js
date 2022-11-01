@@ -6,7 +6,9 @@
  */
 
 function viewAllFreets(fields) {
-  fetch('/api/freets').then(showResponse).catch(showResponse);
+  fetch('/api/freets')
+    .then(showResponse)
+    .catch(showResponse);
 }
 
 function viewFreetsByAuthor(fields) {
