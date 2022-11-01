@@ -317,88 +317,85 @@ This renders the `index.html` file that will be used to interact with the backen
 
 
 
+#### Added by me: 
 
-
-
-
-####  `GET api/freets/shared` - get the shared freets of the logged in user
-**Returns**
-- An array of the logged-in user's shared freets 
-**Throws**
-- `403` if no user is logged in
-####  `GET api/freets/posted` - get the posted freets of the logged in user
-**Returns**
-- An array of the logged-in user's posted freets 
-**Throws**
-- `403` if no user is logged in
-####  `GET api/freets/liked` - get the liked freets of the logged in user
-**Returns**
-- An array of the logged-in user's liked freets 
-**Throws**
-- `403` if no user is logged in
 ####  `GET api/users/timeline` - get the timeline of the logged in user 
 **Returns**
 - An array of the logged-in user's shared and posted freets// all the tweets that will appear on their timeline.  
 **Throws**
 - `403` if no user is logged in
-####  `GET api/users/followers`  - get the logged in user's followers 
-####  `GET api/users/followed` - get the logged in user's followed accounts 
-####  `GET /api/users/feed` - get feed freets (posted and shared freets of followed)
-####  `GET /api/users/profile` - get feed freets (posted and shared freets of followed)
+####  `GET api/users/profile` - get the logged in user 
+**Returns**
+- A success message, data of user 
+**Throws**
+- `403` if the user is not logged in
+####  `GET api/users/:username/profile` - get a user's profile given a username 
+**Returns**
+- A success message, data of user 
+**Throws**
+- `403` if the user is not logged in
+- 404 if user does not exist 
+####  `GET /api/users/feed` - get the logged in user's feed (posted and shared freets of followed)
+**Returns**
 
+- A success message
 
-####  `GET api/users/:username/timeline` - get a user's timeline 
-####  `GET api/users/:username/followed` - get a user's followed 
-####  `GET api/users/:username/followers`  - get a user's followers 
-####  `GET api/freets/:username/posted` - get a user's posted freets 
-####  `GET api/freets/:username/shared` - get a user's shared freets
-####  `GET api/freets/:username/liked` - get a user's liked freets
+**Throws**
 
-####  `PUT api/users/:username/follow`
-####  `DELETE api/users/:username/follow`
+- `403` if the user is not logged in
+####  `GET /api/users/profile` - get the logged in user's data/profile 
+**Returns**
 
-####  `PUT /api/freets/:FreetId/like`
-####  `PUT /api/freets/:FreetId/share`
-####  `DELETE /api/freets/:FreetId/like`
-####  `DELETE /api/freets/:FreetId/share`
+- A success message
 
-#### `PUT /api/users/:username/likes/hide` - hide likes 
-#### `DELETE /api/users/:username/likes/hide` - unhide likes 
+**Throws**
 
+- `403` if the user is not logged in
+####  `PUT api/users/:username/follow` - allows to follow a user given their username
+**Returns**
+- An array with the usernames of the accounts that the user follows. 
+**Throws**
+- `403` if no user is logged in
+- `404` if `username` is not a recognized username of any user
+- 409 is username cannot be followed (is already followed, or self)
+####  `DELETE api/users/:username/unfollow` - allows to unfollow a user given their username
+**Returns**
+success message 
+ **Throws**
+- `403` if no user is logged in
+- `404` if `username` is not a recognized username of any user
+- 409 is username cannot be unfollowed (is already unfollowed, or self)
+####  `PUT /api/freets/:FreetId/like` - allows to like a Freet given a freet id
+**Returns**
+- {string} A success message
+**Throws**
+- `403` if the user is not logged in
+- 404 if the freet id is not valid 
+- 400 is freet is already liked 
 
-
-
-
-
-
-
+####  `PUT /api/freets/:FreetId/share` - allows to share a Freet given a freet id
+**Returns**
+- {string} A success message
+**Throws**
+- `403` if the user is not logged in
+- 404 if the freet id is not valid 
+- 409 is freet is already shared 
+####  `PUT /api/freets/:FreetId/unlike - allows to unlike a freet given freet id
+**Returns**
+- {string} A success message
+**Throws**
+- `403` if the user is not logged in
+- 404 if the freet id is not valid 
+- 409 is freet is already unliked 
+####  `PUT /api/freets/:FreetId/unshare`- allows to unshare a freet given freet id
+**Returns**
+- {string} A success message
+**Throws**
+- `403` if the user is not logged in
+- 404 if the freet id is not valid 
+- 409 is freet is already unshared 
 #### `GET /api/users/followers` - Get the logged-in user's followers' usernames
 **Returns**
 - An array with the user's followers' usernames 
 **Throws**
 - `403` if no user is logged in
-
-#### `GET /api/users/followed` - Get the logged-in user's followed account usernames 
-
-**Returns**
-
-- An array with the usernames of the accounts that the user follows. 
-
-**Throws**
-
-- `403` if no user is logged in
-
-
-
-#### `PUT /api/users/:USERNAME?/follow` - Logged in user follows account with the input username 
-
-**Returns**
-
-- An array with the usernames of the accounts that the user follows. 
-
-**Throws**
-
-- `403` if no user is logged in
-- `404` if `username` is not a recognized username of any user
-
-

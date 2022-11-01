@@ -156,14 +156,14 @@ router.delete(
  * Show the logger in user's profile.
  *
  * @name GET /api/users/profile
+ * @return {string, user} - success message, and user data 
  * @throws {403} - If user is not logged in
  */
 router.get(
   '/profile',
-  // [
-  //   userValidator.isUserLoggedIn
-  // ],
-
+  [
+    userValidator.isUserLoggedIn
+  ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const user = await UserCollection.findOneByUserId(userId);
@@ -177,7 +177,9 @@ router.get(
  * Show a given user's profile.
  *
  * @name GET /api/users/:username/profile
- * @throws {403} - If user is not logged in
+ * @return {string, user}
+ * @throws {403} - If user is not logged in .
+ * @throws {404} - if user by that username does not exist. 
  */
 router.get(
   '/:username?/profile',
@@ -196,7 +198,11 @@ router.get(
  * Follow a user.
  *
  * @name PUT /api/users/:username/follow
- *
+ * @return {string, user} - success message
+ * 
+ * @throws {403} - If user is not logged in .
+ * @throws {404} - if user by that username does not exist.
+ * @throws {409} - if user cannot be followed.(is already followed)
  */
 router.put(
   '/:username?/follow',
@@ -209,13 +215,13 @@ router.put(
     const followUsername = req.params.username;
 
     if (user.username === followUsername) {
-      res.status(403).json({
+      res.status(409).json({
         error: 'Cannot follow yourself.'
       });
     }
 
     if (user.followed.includes(followUsername)) {
-      res.status(403).json({
+      res.status(409).json({
         error: 'Already following.'
       });
     }
@@ -229,9 +235,11 @@ router.put(
 
 /**
  * Unfollow a user.
- *
- * @name PUT /api/users/:username/follow
- *
+ * @name PUT /api/users/:username/unfollow
+ * @return {string, user} - success message
+ * @throws {403} - If user is not logged in .
+ * @throws {404} - if user by that username does not exist.
+ * @throws {409} - if user cannot be unfollowed.(is already unfollowed)
  */
 router.put(
   '/:username?/unfollow',

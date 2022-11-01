@@ -145,6 +145,7 @@ router.put(
  * @throws {403} - If the user is not logged in or is not the author of
  *                 the freet
  * @throws {404} - If the freetId is not valid
+ * @throws {400} - if the freet is already liked
  */
 router.put(
   '/:freetId?/like',
@@ -179,6 +180,7 @@ router.put(
  * @throws {403} - If the user is not logged in or is not the author of
  *                 the freet
  * @throws {404} - If the freetId is not valid
+ * @throws {409} - If the freet cannot be unliked (is already unliked)
  */
 router.put(
   '/:freetId?/unlike',
@@ -194,7 +196,7 @@ router.put(
     const freet = await FreetCollection.findOne(req.params.freetId);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (!freet.likedBy.includes(username) || !user.likedFreets.includes(req.params.freetId)) {
-      res.status(400).json({
+      res.status(409).json({
         message: 'Freet is not currently liked.'
       });
     }
@@ -215,6 +217,7 @@ router.put(
  * @throws {403} - If the user is not logged in or is not the author of
  *                 the freet
  * @throws {404} - If the freetId is not valid
+ * @throws {409} - if freet has already been shared.
  */
 router.put(
   '/:freetId?/share',
@@ -227,7 +230,7 @@ router.put(
     const user = await UserCollection.findOneByUserId(userId);
     const freet = await FreetCollection.findOne(req.params.freetId);
     if (freet.sharedBy.includes(user.username) || user.sharedFreets.includes(req.params.freetId)) {
-      res.status(400).json({
+      res.status(409).json({
         message: 'Freet already shared!'
       });
     }
@@ -249,6 +252,7 @@ router.put(
  * @throws {403} - If the user is not logged in or is not the author of
  *                 the freet
  * @throws {404} - If the freetId is not valid
+ * @throws {409} - if freet has already been shared.
  */
 router.put(
   '/:freetId?/unshare',
@@ -261,7 +265,7 @@ router.put(
     const user = await UserCollection.findOneByUserId(userId);
     const freet = await FreetCollection.findOne(req.params.freetId);
     if (!freet.sharedBy.includes(user.username) || !user.sharedFreets.includes(req.params.freetId)) {
-      res.status(400).json({
+      res.status(409).json({
         message: 'Freet not shared yet!'
       });
     }

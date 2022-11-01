@@ -40,7 +40,6 @@ const formsAndHandlers = {
   'show-user': showUser,
   'view-all-freets': viewAllFreets,
   'view-freets-by-author': viewFreetsByAuthor,
-  'view-freet': viewFreet,
   'create-freet': createFreet,
   'edit-freet': editFreet,
   'delete-freet': deleteFreet,
