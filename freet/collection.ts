@@ -135,7 +135,6 @@ class FreetCollection {
     }
 
     await user.save();
-    console.log("likedFreets should be done", user.likedFreets);
     return freet;
   }
 
