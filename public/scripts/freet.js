@@ -59,16 +59,6 @@ function unlikeFreet(fields) {
     .catch(showResponse);
 }
 
-function viewFreet(fields) {
-  fetch(`/api/freets/${fields.id}`, {
-    method: 'GET',
-    body: JSON.stringify(fields),
-    headers: {'Content-Type': 'application/json'}
-  })
-    .then(showResponse)
-    .catch(showResponse);
-}
-
 function shareFreet(fields) {
   fetch(`/api/freets/${fields.id}/share`, {
     method: 'PUT',
@@ -89,28 +79,3 @@ function unshareFreet(fields) {
     .catch(showResponse);
 }
 
-function viewMyLiked(fields) {
-  fetch('/api/freets/liked', {
-    method: 'GET',
-    body: JSON.stringify(fields),
-    headers: {'Content-Type': 'application/json'}
-  })
-    .then(showResponse)
-    .catch(showResponse);
-}
-
-function viewMyShared(fields) {
-  fetch('api/freets/shared', {
-    method: 'GET',
-    body: JSON.stringify(fields),
-    headers: {'Content-Type': 'application/json'}
-  }).then(showResponse).catch(showResponse);
-}
-
-function viewMyPosted(fields) {
-  fetch('/api/freets/posted', {
-    method: 'GET',
-    body: JSON.stringify(fields),
-    headers: {'Content-Type': 'application/json'}
-  }).then(showResponse).catch(showResponse);
-}

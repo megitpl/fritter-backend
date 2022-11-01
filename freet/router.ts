@@ -207,32 +207,6 @@ router.put(
 );
 
 /**
- * View a freet
- *
- * @name GET /api/freets/:freetId
- *
- * @return {string} - A success message
- * @throws {403} - If the user is not logged in or is not the author of
- *                 the freet
- * @throws {404} - If the freetId is not valid
- */
-router.get(
-  '/:freetId?',
-  [
-    userValidator.isUserLoggedIn,
-    freetValidator.isFreetExists
-  ],
-  async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string) ?? '';
-    const freet = await FreetCollection.unlike(req.params.freetId, userId);
-    res.status(200).json({
-      message: 'Freet was liked successfully.',
-      freet
-    });
-  }
-);
-
-/**
  * Share a freet
  *
  * @name PUT /api/freets/:id/share
@@ -300,4 +274,4 @@ router.put(
   }
 );
 
-export { router as freetRouter };
+export {router as freetRouter};
