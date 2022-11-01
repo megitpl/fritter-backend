@@ -69,7 +69,7 @@ function viewFollowed(fields) {
 }
 
 function unfollowUser(fields) {
-  fetch(`/api/users/${fields.id}/follow`, {method: 'PUT'})
+  fetch(`/api/users/${fields.id}/unfollow`, {method: 'PUT'})
     .then(showResponse)
     .catch(showResponse);
 }
@@ -81,14 +81,14 @@ function followUser(fields) {
     .catch(showResponse);
 }
 
-function viewMyTimeline(fields) {
+function viewTimeline(fields) {
   fetch('/api/users/timeline',
     {method: 'GET'})
     .then(showResponse)
     .catch(showResponse);
 }
 
-function viewMyFeed(fields) {
+function viewFeed(fields) {
   fetch('/api/users/feed',
     {method: 'GET'})
     .then(showResponse)

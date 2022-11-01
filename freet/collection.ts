@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import type { HydratedDocument, Types } from 'mongoose';
 import type { Freet } from './model';
@@ -96,17 +97,11 @@ class FreetCollection {
    * @param {string} freetId
    * @return {Promise<HydratedDocument<Freet>>}
    */
-  static async likeTweet(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  static async like(freetId: Types.ObjectId | string, username: string): Promise<HydratedDocument<Freet>> {
     const freet = await FreetCollection.findOne(freetId);
-    const user = await UserCollection.findOneByUserId(userId);
-    if (!freet.likedBy.includes(userId)) {
-      freet.likedBy.push(userId);
-    }
-
-    if (!user.likedFreets.includes(freetId)) {
-      user.likedFreets.push(freetId);
-    }
-
+    const user = await UserCollection.findOneByUsername(username);
+    freet.likedBy.push(username);
+    user.likedFreets.push(freetId);
     await freet.save();
     await user.save();
     return freet;
@@ -118,18 +113,20 @@ class FreetCollection {
    * @param {string} freetId
    * @return {Promise<HydratedDocument<Freet>>}
    */
-  static async unlikeTweet(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  static async unlike(freetId: Types.ObjectId | string, username: string): Promise<HydratedDocument<Freet>> {
     const freet = await FreetCollection.findOne(freetId);
-    const user = await UserCollection.findOneByUserId(userId);
-    if (freet.likedBy.includes(userId)) {
+    const user = await UserCollection.findOneByUsername(username);
+
+    if (freet.likedBy.includes(username)) {
       freet.likedBy.forEach((i, idx) => {
-        if (i === userId) {
+        if (i === username) {
           freet.likedBy.splice(idx, 1);
         }
       });
     }
 
-    if (user.likedFreets.includes(userId)) {
+    await freet.save();
+    if (user.likedFreets.includes(freetId)) {
       user.likedFreets.forEach((i, idx) => {
         if (i === freetId) {
           user.likedFreets.splice(idx, 1);
@@ -137,8 +134,8 @@ class FreetCollection {
       });
     }
 
-    await freet.save();
     await user.save();
+    console.log("likedFreets should be done", user.likedFreets);
     return freet;
   }
 
@@ -148,11 +145,13 @@ class FreetCollection {
    * @param {string} freetId - The freetId of freet to delete
    * @return {Promise<HydratedDocument<Freet>>} - true if the freet has been deleted, false otherwise
    */
-  static async shareTweet(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+
+  static async shareFreet(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
     const freet = await FreetCollection.findOne(freetId);
     const user = await UserCollection.findOneByUserId(userId);
-    if (!freet.sharedBy.includes(userId)) {
-      freet.sharedBy.push(userId);
+    const username = user.username;
+    if (!freet.sharedBy.includes(username)) {
+      freet.sharedBy.push(username);
     }
 
     if (!user.sharedFreets.includes(freetId)) {
@@ -170,24 +169,21 @@ class FreetCollection {
      * @param {string} freetId
      * @return {Promise<HydratedDocument<Freet>>}
      */
-  static async unshareTweet(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
+  static async unshareFreet(freetId: Types.ObjectId | string, userId: Types.ObjectId | string): Promise<HydratedDocument<Freet>> {
     const freet = await FreetCollection.findOne(freetId);
     const user = await UserCollection.findOneByUserId(userId);
-    if (freet.sharedBy.includes(userId)) {
-      freet.sharedBy.forEach((i, idx) => {
-        if (i === userId) {
-          freet.sharedBy.splice(idx, 1);
-        }
-      });
-    }
+    const username = user.username
+    freet.sharedBy.forEach((i, idx) => {
+      if (i === username) {
+        freet.sharedBy.splice(idx, 1);
+      }
+    });
 
-    if (user.sharedFreets.includes(userId)) {
-      user.sharedFreets.forEach((i, idx) => {
-        if (i === freetId) {
-          user.sharedFreets.splice(idx, 1);
-        }
-      });
-    }
+    user.sharedFreets.forEach((i, idx) => {
+      if (i === freetId) {
+        user.sharedFreets.splice(idx, 1);
+      }
+    });
 
     await freet.save();
     await user.save();

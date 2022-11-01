@@ -43,7 +43,25 @@ function deleteFreet(fields) {
 
 function likeFreet(fields) {
   fetch(`/api/freets/${fields.id}/like`, {
+    method: 'PUT'
+  })
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function unlikeFreet(fields) {
+  fetch(`/api/freets/${fields.id}/unlike`, {
     method: 'PUT',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  })
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function viewFreet(fields) {
+  fetch(`/api/freets/${fields.id}`, {
+    method: 'GET',
     body: JSON.stringify(fields),
     headers: {'Content-Type': 'application/json'}
   })
@@ -53,6 +71,16 @@ function likeFreet(fields) {
 
 function shareFreet(fields) {
   fetch(`/api/freets/${fields.id}/share`, {
+    method: 'PUT',
+    body: JSON.stringify(fields),
+    headers: {'Content-Type': 'application/json'}
+  })
+    .then(showResponse)
+    .catch(showResponse);
+}
+
+function unshareFreet(fields) {
+  fetch(`/api/freets/${fields.id}/unshare`, {
     method: 'PUT',
     body: JSON.stringify(fields),
     headers: {'Content-Type': 'application/json'}

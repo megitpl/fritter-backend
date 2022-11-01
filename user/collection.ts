@@ -103,11 +103,13 @@ class UserCollection {
   static async followUser(userId: Types.ObjectId | string, username: string): Promise<HydratedDocument<User, User>> {
     const user = await UserCollection.findOneByUserId(userId);
     const toBeFollowed = await UserCollection.findOneByUsername(username);
+    console.log("username:", username);
     if (user.followed.includes(username)) {
       throw new Error("already following.");
     }
 
     toBeFollowed.followers.push(user.username);
+    user.followed.push(username);
     await user.save();
     await toBeFollowed.save();
     return user;

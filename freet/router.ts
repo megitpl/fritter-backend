@@ -1,10 +1,12 @@
-import type {NextFunction, Request, Response} from 'express';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import FreetCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as freetValidator from '../freet/middleware';
 import * as util from './util';
-import UserCollection from 'user/collection';
+import UserCollection from '../user/collection';
 
 const router = express.Router();
 
@@ -69,7 +71,9 @@ router.post(
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const freet = await FreetCollection.addOne(userId, req.body.content);
-
+    const user = await UserCollection.findOneByUserId(userId);
+    user.postedFreets.push(freet);
+    await user.save();
     res.status(201).json({
       message: 'Your freet was created successfully.',
       freet: util.constructFreetResponse(freet)
@@ -150,10 +154,18 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? '';
-    const freet = await FreetCollection.likeTweet(req.params.freetId, userId);
+    const user = await UserCollection.findOneByUserId(userId);
+    const freet = await FreetCollection.findOne(req.params.freetId);
+    if (freet.likedBy.includes(user.username)) {
+      res.status(400).json({
+        message: 'Already liked this Freet.'
+      });
+      return;
+    }
+
+    await FreetCollection.like(req.params.freetId, user.username);
     res.status(200).json({
-      message: 'Freet was liked successfully.',
-      freet
+      message: 'Freet was liked successfully.'
     });
   }
 );
@@ -168,7 +180,7 @@ router.put(
  *                 the freet
  * @throws {404} - If the freetId is not valid
  */
- router.put(
+router.put(
   '/:freetId?/unlike',
   [
     userValidator.isUserLoggedIn,
@@ -176,7 +188,43 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? '';
-    const freet = await FreetCollection.unlikeTweet(req.params.freetId, userId);
+    const user = await UserCollection.findOneByUserId(userId);
+    // eslint-disable-next-line prefer-destructuring
+    const username = user.username;
+    const freet = await FreetCollection.findOne(req.params.freetId);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    if (!freet.likedBy.includes(username) || !user.likedFreets.includes(req.params.freetId)) {
+      res.status(400).json({
+        message: 'Freet is not currently liked.'
+      });
+    }
+
+    await FreetCollection.unlike(req.params.freetId, username);
+    res.status(200).json({
+      message: 'Freet was unliked successfully.'
+    });
+  }
+);
+
+/**
+ * View a freet
+ *
+ * @name GET /api/freets/:freetId
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the author of
+ *                 the freet
+ * @throws {404} - If the freetId is not valid
+ */
+router.get(
+  '/:freetId?',
+  [
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? '';
+    const freet = await FreetCollection.unlike(req.params.freetId, userId);
     res.status(200).json({
       message: 'Freet was liked successfully.',
       freet
@@ -202,7 +250,15 @@ router.put(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const freet = await FreetCollection.shareTweet(req.params.freetId, userId);
+    const user = await UserCollection.findOneByUserId(userId);
+    const freet = await FreetCollection.findOne(req.params.freetId);
+    if (freet.sharedBy.includes(user.username) || user.sharedFreets.includes(req.params.freetId)) {
+      res.status(400).json({
+        message: 'Freet already shared!'
+      });
+    }
+
+    await FreetCollection.shareFreet(req.params.freetId, userId);
     res.status(200).json({
       message: 'Freet was shared successfully.',
       freet
@@ -210,5 +266,38 @@ router.put(
   }
 );
 
+/**
+ * Unshare a freet
+ *
+ * @name PUT /api/freets/:freetId/unshare
+ *
+ * @return {string} - A success message
+ * @throws {403} - If the user is not logged in or is not the author of
+ *                 the freet
+ * @throws {404} - If the freetId is not valid
+ */
+router.put(
+  '/:freetId?/unshare',
+  [
+    userValidator.isUserLoggedIn,
+    freetValidator.isFreetExists
+  ],
+  async (req: Request, res: Response) => {
+    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    const user = await UserCollection.findOneByUserId(userId);
+    const freet = await FreetCollection.findOne(req.params.freetId);
+    if (!freet.sharedBy.includes(user.username) || !user.sharedFreets.includes(req.params.freetId)) {
+      res.status(400).json({
+        message: 'Freet not shared yet!'
+      });
+    }
 
-export {router as freetRouter};
+    await FreetCollection.unshareFreet(req.params.freetId, userId);
+    res.status(200).json({
+      message: 'Freet was unshared successfully.',
+      freet
+    });
+  }
+);
+
+export { router as freetRouter };

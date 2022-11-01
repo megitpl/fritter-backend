@@ -1,3 +1,5 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import type { Request, Response } from 'express';
 import express from 'express';
@@ -5,6 +7,7 @@ import FreetCollection from '../freet/collection';
 import UserCollection from './collection';
 import * as userValidator from '../user/middleware';
 import * as util from './util';
+import { Freet } from 'freet/model';
 
 const router = express.Router();
 
@@ -162,7 +165,6 @@ router.get(
   // ],
 
   async (req: Request, res: Response) => {
-    console.log("helo");
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const user = await UserCollection.findOneByUserId(userId);
     res.status(200).json({
@@ -190,54 +192,6 @@ router.get(
     });
   }
 );
-
-/**
- * Show a user's followers.
- *
- * @name GET /api/users/followers
- * @param {user} user - The user
- * @return {UserResponse} - An object with user's details
- * @throws {403} - If user is not logged in
- *
- */
-router.get(
-  '/followers',
-  [
-    userValidator.isUserLoggedIn
-  ],
-  async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string) ?? '';
-    const user = await UserCollection.findOneByUserId(userId);
-    // eslint-disable-next-line prefer-destructuring
-    const followers = user.followers;
-    res.status(200).json({
-      message: 'This is the followers.',
-      followers
-    });
-  }
-);
-/**
- * Show a user's followed.
- *
- * @name GET /api/users/followed
- *
- */
-router.get(
-  '/followed',
-  [
-    userValidator.isUserLoggedIn
-  ],
-  async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    const user = await UserCollection.findOneByUserId(userId);
-    const followed = user.followed;
-    res.status(200).json({
-      message: 'This is the users followed accounts.',
-      followed
-    });
-  }
-);
-
 /**
  * Follow a user.
  *
@@ -260,6 +214,12 @@ router.put(
       });
     }
 
+    if (user.followed.includes(followUsername)) {
+      res.status(403).json({
+        error: 'Already following.'
+      });
+    }
+
     await UserCollection.followUser(userId, followUsername);
     res.status(200).json({
       message: 'Successfully followed!'
@@ -274,7 +234,7 @@ router.put(
  *
  */
 router.put(
-  '/follow/:username?',
+  '/:username?/unfollow',
   [
     userValidator.isUserLoggedIn,
     userValidator.isValidUsername
@@ -291,14 +251,14 @@ router.put(
 
     await UserCollection.unfollowUser(userId, unfollowUsername);
     res.status(200).json({
-      message: 'Successfully followed!'
+      message: 'Successfully unfollowed!'
     });
   }
 );
 /**
  * Show a user's timeline.
  *
- * @name GET /api/users/:username?/timeline
+ * @name GET /api/users/timeline
  *
  */
 router.get(
@@ -307,8 +267,11 @@ router.get(
     userValidator.isUserLoggedIn
   ],
   async (req: Request, res: Response) => {
-    const user = await UserCollection.findOneByUsername(req.params.username);
-    const timeline = [user.postedFreets, user.sharedFreets];
+    const userId = (req.session.userId as string) ?? '';
+    const user = await UserCollection.findOneByUserId(userId);
+    const timeline: Freet[] = [];
+    user.postedFreets.map(x => timeline.push(x));
+    user.sharedFreets.map(x => timeline.push(x));
     res.status(200).json({
       message: 'This is the users timeline!',
       timeline
@@ -329,15 +292,27 @@ router.get(
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
     const user = await UserCollection.findOneByUserId(userId);
-    const feed: any[] = [];
-    user.followed.forEach(async item => {
+    const feed: Freet[] = [];
+    for (const item of user.followed) {
       const followedUser = await UserCollection.findOneByUsername(item);
       const posted = followedUser.postedFreets;
       const shared = followedUser.sharedFreets;
-      followedUser.postedFreets.map(x => feed.push(x));
-      followedUser.sharedFreets.map(x => feed.push(x));
-    });
-    console.log('Feed is:', feed);
+      for (const post of posted) {
+        feed.push(post);
+      }
+
+      for (const share of shared) {
+        feed.push(share);
+      }
+
+      posted.forEach(x => feed.push(x));
+      shared.forEach(x => feed.push(x));
+    }
+
+    for (const item of user.postedFreets) {
+      feed.push(item);
+    }
+
     res.status(200).json({
       message: 'This is the users feed',
       feed
